@@ -55,6 +55,24 @@ jest.mock('expo-screen-capture', () => ({
   addScreenCaptureListener: jest.fn(() => ({ remove: jest.fn() })),
 }));
 
+jest.mock('expo-av', () => {
+  const React = require('react');
+  return {
+    __esModule: true,
+    Video: React.forwardRef((props, ref) => {
+      const { View } = require('react-native');
+      return React.createElement(View, { ...props, ref });
+    }),
+    Audio: { setAudioModeAsync: jest.fn(), setIsEnabledAsync: jest.fn() },
+  };
+});
+
+jest.mock('expo-secure-store', () => ({
+  getItemAsync: jest.fn(() => Promise.resolve(null)),
+  setItemAsync: jest.fn(() => Promise.resolve()),
+  deleteItemAsync: jest.fn(() => Promise.resolve()),
+}));
+
 jest.mock('expo-status-bar', () => ({
   StatusBar: 'StatusBar',
   setStatusBarStyle: jest.fn(),

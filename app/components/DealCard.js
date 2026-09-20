@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, Animated, Share } from 'react-native';
+import { Video, ResizeMode } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { COLORS, SPACING, BORDER_RADIUS } from '../constants/theme';
@@ -79,6 +80,11 @@ function DealCard({ deal, isLite, config, scrollY, onDismiss, onLike, customizat
   const [imgError, setImgError] = useState(false);
   const rightBarTranslateX = useRef(new Animated.Value(0)).current;
   const bottomInfoOpacity = useRef(new Animated.Value(1)).current;
+  const videoRef = useRef(null);
+  const [videoStatus, setVideoStatus] = useState({ isLoaded: false, playing: false });
+  const [muted, setMuted] = useState(false);
+
+  const hasVideo = !!deal.video;
 
   const cardStyle = customization?.cardStyle || 'elevated';
   const showDiscount = customization?.showDiscount !== false;
@@ -88,7 +94,12 @@ function DealCard({ deal, isLite, config, scrollY, onDismiss, onLike, customizat
   const gradientOpacity = customization?.gradientOpacity || 0.6;
 
   useEffect(() => {
-    return () => { if (heartTimer.current) clearTimeout(heartTimer.current); };
+    return () => {
+      if (heartTimer.current) clearTimeout(heartTimer.current);
+      if (videoRef.current) {
+        videoRef.current.stopAsync();
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -171,20 +182,63 @@ function DealCard({ deal, isLite, config, scrollY, onDismiss, onLike, customizat
       <TouchableOpacity
         style={styles.imageArea}
         activeOpacity={1}
-        onPress={handleDoubleTap}
+        onPress={hasVideo ? () => {
+          if (videoStatus.playing) {
+            videoRef.current?.pauseAsync();
+          } else {
+            videoRef.current?.playAsync();
+          }
+          if (config?.haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        } : handleDoubleTap}
       >
-        <ImageComponent
-          source={{ uri: imgError ? FALLBACK_IMAGE : deal.image }}
-          style={[
-            styles.bgImage,
-            config?.animations && { transform: [{ translateY: imageTranslateY }] },
-          ]}
-          resizeMode="cover"
-          onError={() => setImgError(true)}
-        />
+        {hasVideo ? (
+          <Video
+            ref={videoRef}
+            source={{ uri: deal.video }}
+            style={[styles.bgImage, config?.animations && { transform: [{ translateY: imageTranslateY }] }]}
+            resizeMode={ResizeMode.COVER}
+            shouldPlay={true}
+            isLooping={true}
+            isMuted={muted}
+            useNativeControls={false}
+            onPlaybackStatusUpdate={(status) => {
+              setVideoStatus({
+                isLoaded: status.isLoaded,
+                playing: status.isPlaying,
+              });
+            }}
+          />
+        ) : (
+          <ImageComponent
+            source={{ uri: imgError ? FALLBACK_IMAGE : deal.image }}
+            style={[
+              styles.bgImage,
+              config?.animations && { transform: [{ translateY: imageTranslateY }] },
+            ]}
+            resizeMode="cover"
+            onError={() => setImgError(true)}
+          />
+        )}
         <View style={styles.gradientTop} />
         {config?.simpleGradients ? null : (
           <View style={[styles.gradientBottom, { height: SCREEN_HEIGHT * 0.45, backgroundColor: `rgba(26,20,16,${gradientOpacity})` }]} />
+        )}
+
+        {hasVideo && (
+          <View style={styles.videoBadge}>
+            <Ionicons name={videoStatus.playing ? 'pause' : 'play'} size={14} color="#FFF" />
+          </View>
+        )}
+        {hasVideo && (
+          <TouchableOpacity
+            style={styles.muteBtn}
+            onPress={(e) => {
+              e.stopPropagation?.();
+              setMuted(!muted);
+            }}
+          >
+            <Ionicons name={muted ? 'volume-mute' : 'volume-high'} size={16} color="#FFF" />
+          </TouchableOpacity>
         )}
       </TouchableOpacity>
 
@@ -605,5 +659,27 @@ const styles = StyleSheet.create({
   },
   countryFlag: {
     fontSize: 12,
+  },
+  videoBadge: {
+    position: 'absolute',
+    top: 80,
+    left: 12,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  muteBtn: {
+    position: 'absolute',
+    top: 80,
+    right: 12,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
