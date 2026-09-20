@@ -149,3 +149,20 @@
 ---
 
 *Tento zapisnik je zivy. Kazdy napad sem patri.*
+
+---
+
+## 11. ENIGMA 1+ (PULKA)
+
+- [x] NLP query parser (kategorie, cena, sleva, intent)
+- [x] Intent detection (search/nearby/cheap/best/new/expiring/compare)
+- [x] Deal filtering podle NLP dotazu
+- [x] Auto-sugestce z textoveho dotazu
+
+- [ ] Behavioral recommendations (co uzivatel swipoval)
+- [ ] Context-aware suggestions (cas, poloha, historie)
+- [ ] ML model na categorizaci
+- [ ] Sentiment analysis recenzi
+- [ ] Price prediction (kdy koupit)
+- [ ] Social graph (co kupuji pratel)
+- [ ] Autonomous deal creation

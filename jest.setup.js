@@ -67,6 +67,13 @@ jest.mock('expo-av', () => {
   };
 });
 
+jest.mock('expo-local-authentication', () => ({
+  hasHardwareAsync: jest.fn(() => Promise.resolve(true)),
+  isEnrolledAsync: jest.fn(() => Promise.resolve(true)),
+  authenticateAsync: jest.fn(() => Promise.resolve({ success: true })),
+  getEnrolledLevelAsync: jest.fn(() => Promise.resolve(2)),
+}));
+
 jest.mock('expo-secure-store', () => ({
   getItemAsync: jest.fn(() => Promise.resolve(null)),
   setItemAsync: jest.fn(() => Promise.resolve()),

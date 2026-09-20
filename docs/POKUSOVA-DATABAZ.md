@@ -115,12 +115,20 @@ aby se neopakovaly chyby a dalo se navazovat.
 
 ---
 
+### Pokus #013 — Datum: 2026-09-20
+- **Prompt**: „do whats next 1-11 and self update until mid 1+"
+- **Výsledek**: Biometrie login (expo-local-auth), animated gradient bg, onboarding quiz, NLP parser (Enigma 1+ Phase 1), LoveCoins system, badge system na profilu, MerchantPortal MVP, notebook section 11, updated _layout.js + profile.js
+- **Status**: ✅ hotovo
+- **Poznámky**: Commit pushed. 30/30 suites, 290 tests, 106 snapshots. Notebook extended to 11 sections. Enigma 1+ mid-point: NLP parser done (kategorie/cena/sleva/intent).
+
+---
+
 ## Statistiky
 
 | Metrika | Hodnota |
 |---------|---------|
-| Celkem pokusů | 12 |
-| ✅ Hotovo | 12 |
+| Celkem pokusů | 14 |
+| ✅ Hotovo | 14 |
 | 🟡 Rozpracováno | 0 |
 | ❌ Padlo | 0 |
 | Úspěšnost | 100% |

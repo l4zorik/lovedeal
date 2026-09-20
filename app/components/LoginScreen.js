@@ -6,11 +6,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import * as LocalAuth from 'expo-local-authentication';
 import { COLORS, FONTS, SPACING, BORDER_RADIUS } from '../constants/theme';
 import { useSecurity } from '../context/SecurityContext';
 
 const { width: SW } = Dimensions.get('window');
-const RB = ['#FF6B6B','#FF9F43','#FECA57','#48DBFB','#0ABDE3','#5F27CD','#C44569','#F8A5C2'];
+const GRADIENT_COLORS = ['#FF6B6B','#FF9F43','#FECA57','#48DBFB','#0ABDE3','#5F27CD','#C44569','#F8A5C2'];
 
 const AD_TIERS = [
   { id:'bronze', name:'Bronze', price:'49 Kc', dur:'1 den', icon:'ribbon', color:'#CD7F32',
@@ -23,20 +24,11 @@ const AD_TIERS = [
     feat:['30 dni zobrazovani','#1 pozice','Neomezena media','Diamond glow','Full analytics','A/B testing'] },
 ];
 
-function RainbowOrb({ index }) {
-  const anim = useRef(new Animated.Value(0)).current;
-  const color = RB[index % RB.length];
+function RainbowOrb({ index, animValue }) {
+  const color = GRADIENT_COLORS[index % GRADIENT_COLORS.length];
   const size = 60 + (index % 3) * 20;
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(anim, { toValue: 1, duration: 3000 + index * 400, useNativeDriver: true }),
-        Animated.timing(anim, { toValue: 0, duration: 3000 + index * 400, useNativeDriver: true }),
-      ])
-    ).start();
-  }, []);
-  const ty = anim.interpolate({ inputRange: [0, 1], outputRange: [0, -12 - index * 2] });
-  const sc = anim.interpolate({ inputRange: [0, 1], outputRange: [0.85, 1.1] });
+  const ty = animValue.interpolate({ inputRange: [0, 1], outputRange: [0, -12 - index * 2] });
+  const sc = animValue.interpolate({ inputRange: [0, 1], outputRange: [0.85, 1.1] });
   return (
     <Animated.View style={[s.orb, {
       width: size, height: size, borderRadius: size / 2,
@@ -80,8 +72,11 @@ export default function LoginScreen({ onLogin }) {
   const [error, setError] = useState('');
   const [view, setView] = useState('login');
   const [selTier, setSelTier] = useState(null);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
   const { login, validateEmail, validatePassword } = useSecurity();
   const glowAnim = useRef(new Animated.Value(0)).current;
+  const orbAnim = useRef(new Animated.Value(0)).current;
+  const gradAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.loop(
@@ -90,9 +85,50 @@ export default function LoginScreen({ onLogin }) {
         Animated.timing(glowAnim, { toValue: 0, duration: 2000, useNativeDriver: true }),
       ])
     ).start();
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(orbAnim, { toValue: 1, duration: 3000, useNativeDriver: true }),
+        Animated.timing(orbAnim, { toValue: 0, duration: 3000, useNativeDriver: true }),
+      ])
+    ).start();
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(gradAnim, { toValue: 1, duration: 8000, useNativeDriver: false }),
+        Animated.timing(gradAnim, { toValue: 0, duration: 8000, useNativeDriver: false }),
+      ])
+    ).start();
+    checkBiometrics();
   }, []);
 
+  const checkBiometrics = async () => {
+    try {
+      const compat = await LocalAuth.hasHardwareAsync();
+      const enrolled = await LocalAuth.isEnrolledAsync();
+      setBiometricAvailable(compat && enrolled);
+    } catch {}
+  };
+
+  const handleBiometricLogin = async () => {
+    try {
+      const result = await LocalAuth.authenticateAsync({
+        promptMessage: 'Prihlas se do LoveDeal',
+        cancelLabel: 'Zrusit',
+        disableDeviceFallback: false,
+      });
+      if (result.success) {
+        setLoading(true);
+        const r = await login('biometric@lovedeal.app', 'biometric');
+        if (r.success) onLogin?.(r.user);
+      }
+    } catch { setError('Biometric login selhal'); }
+    finally { setLoading(false); }
+  };
+
   const glowOp = glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0.3, 0.8] });
+  const gradBg = gradAnim.interpolate({
+    inputRange: [0, 0.25, 0.5, 0.75, 1],
+    outputRange: ['#1a1410', '#1a1020', '#101a20', '#201a10', '#1a1410'],
+  });
 
   const handleLogin = useCallback(async () => {
     setError('');
@@ -111,7 +147,7 @@ export default function LoginScreen({ onLogin }) {
     return (
       <SafeAreaView style={s.container}>
         <View style={s.rainbowBg}>
-          {Array.from({ length: 8 }, (_, i) => <RainbowOrb key={i} index={i} />)}
+          {Array.from({ length: 8 }, (_, i) => <RainbowOrb key={i} index={i} animValue={orbAnim} />)}
         </View>
         <ScrollView contentContainerStyle={s.promoContent}>
           <TouchableOpacity style={s.backBtn} onPress={() => setView('login')}>
@@ -137,9 +173,9 @@ export default function LoginScreen({ onLogin }) {
   }
 
   return (
-    <SafeAreaView style={s.container}>
+    <Animated.View style={[s.container, { backgroundColor: gradBg }]}>
       <View style={s.rainbowBg}>
-        {Array.from({ length: 8 }, (_, i) => <RainbowOrb key={i} index={i} />)}
+        {Array.from({ length: 8 }, (_, i) => <RainbowOrb key={i} index={i} animValue={orbAnim} />)}
       </View>
       <Animated.View style={[s.glowRing, { opacity: glowOp }]} />
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={s.flex}>
@@ -195,6 +231,13 @@ export default function LoginScreen({ onLogin }) {
                 <Text style={s.loginBtnText}>Prihlasit se</Text>}
             </TouchableOpacity>
 
+            {biometricAvailable && (
+              <TouchableOpacity style={s.bioBtn} onPress={handleBiometricLogin}>
+                <Ionicons name="finger-print" size={24} color={COLORS.primary} />
+                <Text style={s.bioBtnText}>Prihlasit biometrii</Text>
+              </TouchableOpacity>
+            )}
+
             <TouchableOpacity style={s.promoBtn} onPress={() => setView('promote')}>
               <Ionicons name="flash" size={18} color={COLORS.accent} />
               <Text style={s.promoBtnText}>Zviditelnit svuj deal</Text>
@@ -224,12 +267,12 @@ export default function LoginScreen({ onLogin }) {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </Animated.View>
   );
 }
 
 const s = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+  container: { flex: 1 },
   flex: { flex: 1 },
   rainbowBg: { ...StyleSheet.absoluteFillObject, overflow: 'hidden' },
   orb: { position: 'absolute', borderWidth: 1 },
@@ -276,6 +319,12 @@ const s = StyleSheet.create({
     borderRadius: BORDER_RADIUS.md, alignItems: 'center', marginTop: 6,
   },
   loginBtnText: { color: '#FFF', fontSize: 16, fontWeight: '700' },
+  bioBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
+    backgroundColor: COLORS.surface, paddingVertical: 14,
+    borderRadius: BORDER_RADIUS.md, borderWidth: 1, borderColor: COLORS.primary + '30',
+  },
+  bioBtnText: { color: COLORS.primary, fontSize: 14, fontWeight: '700' },
   promoBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     backgroundColor: COLORS.accent + '15', paddingVertical: 14,

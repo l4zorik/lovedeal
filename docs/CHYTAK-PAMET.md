@@ -94,6 +94,51 @@ Obsahuje klíčové informace, na které se ptal uživatel a které nesmí zapom
 
 ---
 
+### LoginScreen
+- Rainbow design: 8 orbs, glow ring, animated background
+- Paid ad tiers: Bronze (49 Kc), Silver (149 Kc), Gold (499 Kc), Diamond (1499 Kc)
+- Promote view: full-screen card list with tier selection
+- Social login: Google + Apple (placeholder)
+- **Biometrie**: expo-local-authentication, fingerprint/face unlock
+- **Animated gradient**: background barva se meni (interpolace mezi tema barvama)
+
+### Notebook (ZAPISNIK-UPRAV.md)
+- 11 kategorii: Login, Platby, Livestream, Mapa, Notifikace, Profil, Enigma, Technika, Expanze, Biznis, Enigma 1+ (mid)
+- Kazda kategorie: hotovo + budouci
+
+### OnboardingQuiz
+- 5 kroku: Welcome -> Kategorie -> Budget -> Location -> Done
+- Animated transitions (fade + slide)
+- Multi-select kategorii, single-select budget/location
+- Ulozeno do AsyncStorage (@lovedeal_onboarded)
+
+### NLP Parser (utils/NlpParser.js)
+- Category detection: 10 kategorii (jidlo, elektronika, moda, domacnost, sport, kultura, cestovani, auto, zdravi, zvirata)
+- Price extraction: exact, under
+- Discount detection: %
+- Intent detection: search/nearby/cheap/best/new/expiring/compare
+- Deal filtering + auto-sugestce
+
+### LoveCoins (context/LoveCoinsContext.js)
+- 4 coin packy (Starter 100, Popular 500, Mega 1500, Ultra 5000)
+- 6 boostu (superlike, highlight, featured, undo, extra photos)
+- 11 earn actions (daily login, swipe, like, share, streak, refer, post)
+- Persisted v AsyncStorage
+
+### MerchantPortal (screens/MerchantPortal.js)
+- 3 zahlavi: Dashboard, Deals, Create
+- Stats: zobrazeni, kliknuti, ulozeni, konverze
+- Deal rows: title, views, clicks, saves, status dot
+- Create form: title, price, typ, platnost
+
+### Profil s badges
+- Horizontalni scroll badge karet z EnigmaContext
+- Progress bar (unlocked/total %)
+- LoveCoins bar nad stats
+- 19 achievements (first_like, streak, big_spender, etc.)
+
+---
+
 ## 🔄 POSTUP PŘI KAŽDÉM NOVÉM PROMPTU
 
 1. Načti tento soubor (CHYTAK-PAMET.md)
