@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`UndoToast snapshot - bez dealName 1`] = `null`;
+
+exports[`UndoToast snapshot - neviditelný 1`] = `null`;
+
+exports[`UndoToast snapshot - viditelný 1`] = `null`;

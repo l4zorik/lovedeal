@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Badge snapshot - error 1`] = `null`;
+
+exports[`Badge snapshot - large size 1`] = `null`;
+
+exports[`Badge snapshot - outline 1`] = `null`;
+
+exports[`Badge snapshot - primary 1`] = `null`;
+
+exports[`Badge snapshot - small size 1`] = `null`;
+
+exports[`Badge snapshot - success 1`] = `null`;
+
+exports[`Badge snapshot - warning 1`] = `null`;
+
+exports[`Badge snapshot - with dot 1`] = `null`;

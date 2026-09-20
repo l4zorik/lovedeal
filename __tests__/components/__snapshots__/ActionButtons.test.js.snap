@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`ActionButtons snapshot - defaultní stav 1`] = `null`;
+
+exports[`ActionButtons snapshot - liked stav 1`] = `null`;
+
+exports[`ActionButtons snapshot - oba stavy 1`] = `null`;
+
+exports[`ActionButtons snapshot - saved stav 1`] = `null`;

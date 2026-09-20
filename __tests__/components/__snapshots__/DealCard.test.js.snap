@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`DealCard snapshot - bez location 1`] = `null`;
+
+exports[`DealCard snapshot - bez originální ceny 1`] = `null`;
+
+exports[`DealCard snapshot - bez ověření 1`] = `null`;
+
+exports[`DealCard snapshot - bez písničky 1`] = `null`;
+
+exports[`DealCard snapshot - bez slevy 1`] = `null`;
+
+exports[`DealCard snapshot - bez tagů 1`] = `null`;
+
+exports[`DealCard snapshot - defaultní stav 1`] = `null`;
+
+exports[`DealCard snapshot - lite mode 1`] = `null`;

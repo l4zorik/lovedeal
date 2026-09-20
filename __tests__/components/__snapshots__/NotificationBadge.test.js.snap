@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`NotificationBadge snapshot - 99+ badge 1`] = `null`;
+
+exports[`NotificationBadge snapshot - malý badge 1`] = `null`;
+
+exports[`NotificationBadge snapshot - velký badge 1`] = `null`;
+
+exports[`NotificationDot snapshot 1`] = `null`;
+
+exports[`TabBadge snapshot - bez badge 1`] = `null`;
+
+exports[`TabBadge snapshot - focused 1`] = `null`;
+
+exports[`TabBadge snapshot - unfocused 1`] = `null`;

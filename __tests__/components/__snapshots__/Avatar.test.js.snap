@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Avatar snapshot - custom size 1`] = `null`;
+
+exports[`Avatar snapshot - initials fallback 1`] = `null`;
+
+exports[`Avatar snapshot - no name 1`] = `null`;
+
+exports[`Avatar snapshot - single word name 1`] = `null`;
+
+exports[`Avatar snapshot - with image 1`] = `null`;
+
+exports[`Avatar snapshot - with online dot 1`] = `null`;

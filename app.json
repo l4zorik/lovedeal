@@ -1,0 +1,100 @@
+{
+  "expo": {
+    "name": "LoveDeal",
+    "slug": "lovedeal",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "lovedeal",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1A1410"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.lovedeal.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "LoveDeal potřebuje přístup k fotoaparátu pro focení dealů.",
+        "NSPhotoLibraryUsageDescription": "LoveDeal potřebuje přístup k galerii pro nahrávání fotek.",
+        "NSMicrophoneUsageDescription": "LoveDeal potřebuje přístup k mikrofonu pro videa.",
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["lovedeal"]
+          }
+        ]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1A1410",
+        "foregroundImage": "./assets/icon.png"
+      },
+      "package": "com.lovedeal.app",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "VIBRATE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "RECEIVE_BOOT_COMPLETED",
+        "WAKE_LOCK"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "lovedeal",
+              "host": "*",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-image",
+        {
+          "photosPermission": "LoveDeal potřebuje přístup k vašim fotkám.",
+          "cameraPermission": "LoveDeal potřebuje přístup k fotoaparátu."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "lovedeal-app"
+      },
+      "deepLinking": {
+        "enabled": true,
+        "prefixes": ["lovedeal://"],
+        "config": {
+          "screens": {
+            "(tabs)": {
+              "screens": {
+                "index": "feed",
+                "discover": "discover",
+                "create": "create",
+                "map": "map",
+                "notifications": "notifications",
+                "profile": "profile",
+                "settings": "settings"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

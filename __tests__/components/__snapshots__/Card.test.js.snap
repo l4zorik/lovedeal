@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Card snapshot - compound card 1`] = `null`;
+
+exports[`Card snapshot - default 1`] = `null`;
+
+exports[`Card snapshot - elevated 1`] = `null`;
+
+exports[`Card snapshot - filled 1`] = `null`;
+
+exports[`Card snapshot - outlined 1`] = `null`;

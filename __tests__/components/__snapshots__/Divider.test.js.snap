@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Divider snapshot - horizontal 1`] = `null`;
+
+exports[`Divider snapshot - vertical 1`] = `null`;

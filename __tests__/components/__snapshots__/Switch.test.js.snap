@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Switch snapshot - disabled 1`] = `null`;
+
+exports[`Switch snapshot - off 1`] = `null`;
+
+exports[`Switch snapshot - on 1`] = `null`;

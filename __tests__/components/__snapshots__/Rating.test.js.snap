@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Rating snapshot - 0 stars 1`] = `null`;
+
+exports[`Rating snapshot - 3.5 stars 1`] = `null`;
+
+exports[`Rating snapshot - 5 stars 1`] = `null`;
+
+exports[`Rating snapshot - custom max 10 1`] = `null`;
+
+exports[`Rating snapshot - hide value 1`] = `null`;
+
+exports[`Rating snapshot - large size 1`] = `null`;

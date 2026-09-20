@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`AdCard snapshot - bez CTA URL 1`] = `null`;
+
+exports[`AdCard snapshot - bez tagů 1`] = `null`;
+
+exports[`AdCard snapshot - defaultní stav 1`] = `null`;
+
+exports[`AdCard snapshot - lite mode 1`] = `null`;
+
+exports[`AdCard snapshot - s CTA 1`] = `null`;

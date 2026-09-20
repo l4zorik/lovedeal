@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Input snapshot - basic 1`] = `null`;
+
+exports[`Input snapshot - disabled 1`] = `null`;
+
+exports[`Input snapshot - multiline 1`] = `null`;
+
+exports[`Input snapshot - with error 1`] = `null`;
+
+exports[`Input snapshot - with icon 1`] = `null`;
+
+exports[`Input snapshot - with label 1`] = `null`;
+
+exports[`Input snapshot - with value 1`] = `null`;

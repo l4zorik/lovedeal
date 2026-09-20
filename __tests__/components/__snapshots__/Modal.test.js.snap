@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`BottomSheet snapshot - hidden 1`] = `null`;
+
+exports[`BottomSheet snapshot - no title 1`] = `null`;
+
+exports[`BottomSheet snapshot - visible with title 1`] = `null`;
+
+exports[`Modal snapshot - full size 1`] = `null`;
+
+exports[`Modal snapshot - hidden 1`] = `null`;
+
+exports[`Modal snapshot - large size 1`] = `null`;
+
+exports[`Modal snapshot - no close button 1`] = `null`;
+
+exports[`Modal snapshot - no title 1`] = `null`;
+
+exports[`Modal snapshot - small size 1`] = `null`;
+
+exports[`Modal snapshot - visible with title 1`] = `null`;

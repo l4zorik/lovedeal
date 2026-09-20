@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Button snapshot - danger 1`] = `null`;
+
+exports[`Button snapshot - disabled 1`] = `null`;
+
+exports[`Button snapshot - ghost 1`] = `null`;
+
+exports[`Button snapshot - large size 1`] = `null`;
+
+exports[`Button snapshot - outline 1`] = `null`;
+
+exports[`Button snapshot - primary 1`] = `null`;
+
+exports[`Button snapshot - secondary 1`] = `null`;
+
+exports[`Button snapshot - small size 1`] = `null`;
+
+exports[`Button snapshot - with icon 1`] = `null`;

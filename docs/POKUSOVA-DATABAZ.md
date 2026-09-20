@@ -1,0 +1,102 @@
+# POKUSOVÁ DATABÁZE — LoveDeal
+
+Každý prompt/pokus se zaznamenává sem. Slouží jako historie experimentů,
+aby se neopakovaly chyby a dalo se navazovat.
+
+---
+
+## Formát záznamu
+
+```
+### Pokus #XXX — Datum: YYYY-MM-DD
+- **Prompt**: Co jsi chtěl
+- **Výsledek**: Co se stalo
+- **Status**: ✅ hotovo / 🟡 rozpracováno / ❌ padlo
+- **Poznámky**: Co zapamatovat
+```
+
+---
+
+## Seznam pokusů
+
+### Pokus #001 — Datum: 2026-09-20
+- **Prompt**: „Co jsme dosud udělali?"
+- **Výsledek**: Přehled kompletního stavu projektu (30 testů, 292 test cases, komponenty, bugy)
+- **Status**: ✅ hotovo
+- **Poznámky**: Start session. Načíst kontext z AGENTS.md + předchozího summary.
+
+---
+
+### Pokus #002 — Datum: 2026-09-20
+- **Prompt**: „Dokonči to a zapni emulaci"
+- **Výsledek**: Opraveno 8 bugů, spuštěn emulátor Pixel 7 API 35, app nabundlována
+- **Status**: ✅ hotovo
+- **Poznámky**: expo-haptics plugin error → opraveno smazáním z app.json plugins. Emulátor padal kvůli opengl32sw.dll → vyřešeno `-gpu host` přes `Start-Process`.
+
+---
+
+### Pokus #003 — Datum: 2026-09-20
+- **Prompt**: „Funguje to! ale bugy Console Warning — Cannot connect to Expo CLI"
+- **Výsledek**: Spuštěno `adb reverse tcp:8081 tcp:8081`, varování jsou jen expo-router (non-route soubory bez default export)
+- **Status**: ✅ hotovo
+- **Poznámky**: Expo-router generuje warningy pro soubory v `app/` bez default export (constants, context, hooks). Není to bug.
+
+---
+
+### Pokus #004 — Datum: 2026-09-20
+- **Prompt**: „přidej livestreamy (double swipe left = livestreamy, right = nastavení)"
+- **Výsledek**: Vytvořeno: `livestreams.js` (data), `LivestreamCard.js` (komponenta), `LivestreamFeed.js` (obrazovka), upraven SwipeFeed (PanResponder double-swipe), upraven FeedScreen (live bar + navigace)
+- **Status**: ✅ hotovo
+- **Poznámky**: Double-swipe detekce přes PanResponder — 2 swipes na stejnou stranu do 600ms. Hint animace přes `gestureRef.current.hintOpacity`.
+
+---
+
+### Pokus #005 — Datum: 2026-09-20
+- **Prompt**: „a ulož commit všech změn, navrhni větvení a pushni na github a připrav dokumentaci monetizace"
+- **Výsledek**: *(průběžné — stále se pracuje)*
+- **Status**: 🟡 rozpracováno
+- **Poznámky**: Nejdřív dodělat kód, pak git commit + push, pak monetization docs.
+
+---
+
+### Pokus #006 — Datum: 2026-09-20
+- **Prompt**: „a provrstvuj zabezpečení na 4 boží úrovně"
+- **Výsledek**: Napsána filozofická dokumentace DOOMSDAY-SECURITY.md (Sféra 0-6)
+- **Status**: ✅ hotovo
+- **Poznámky**: Uživatel chtěl „teorii a filozofii", ne implementaci. Sféra 0=Sklo, 1=Hlína, 2=Kůže, 3=Kov, 4=Oheň, 5=Zlato, 6=Éter.
+
+---
+
+### Pokus #007 — Datum: 2026-09-20
+- **Prompt**: „ale 5 zatím jen jako teoretická dokumentace a teorie filozofie o 5 (6) sféře zabezpečení"
+- **Výsledek**: Ujasněno — sféra 5+6 = jen teorie, implementace až později
+- **Status**: ✅ hotovo
+- **Poznámky**: Sféra 5 (Zlato) = post-quantum, decentralizace. Sféra 6 (Éter) = teoretický kompass, nikdy se neimplementuje.
+
+---
+
+### Pokus #008 — Datum: 2026-09-20
+- **Prompt**: „zabezpečovací golden dome"
+- **Výsledek**: Pokračování v Doomsday Security dokumentaci, finalizace
+- **Status**: ✅ hotovo
+- **Poznámky**: Golden Dome = Sféra 5. Metafora dokonalé ochrany.
+
+---
+
+### Pokus #009 — Datum: 2026-09-20
+- **Prompt**: „a všechny pokusy (prompty) moje piš do pokusové databáze, vždy identifikuj a pamatuj na co sem se vlastně ptal a udržuj si takový chyták paměťový v sekci chyták"
+- **Výsledek**: Vytvořeny soubory `POKUSOVA-DATABAZ.md` a `CHYTAK-PAMET.md`
+- **Status**: ✅ hotovo
+- **Poznámky**: Tento systém bude pokračovat — každý nový prompt se loguje.
+
+---
+
+## Statistiky
+
+| Metrika | Hodnota |
+|---------|---------|
+| Celkem pokusů | 9 |
+| ✅ Hotovo | 7 |
+| 🟡 Rozpracováno | 1 |
+| ❌ Padlo | 0 |
+| Úspěšnost | 87.5% |

@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`ActionButton snapshot - danger 1`] = `null`;
+
+exports[`ActionButton snapshot - default 1`] = `null`;
+
+exports[`ActionButton snapshot - disabled 1`] = `null`;
+
+exports[`ActionButton snapshot - primary 1`] = `null`;
+
+exports[`ActionButton snapshot - s ikonou 1`] = `null`;
+
+exports[`ActionButton snapshot - small 1`] = `null`;
+
+exports[`QuickAction snapshot - s badge 1`] = `null`;
+
+exports[`QuickAction snapshot - s barvou 1`] = `null`;
+
+exports[`QuickAction snapshot - základní 1`] = `null`;
+
+exports[`QuickActionsGrid snapshot 1`] = `null`;

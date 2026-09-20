@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Loading snapshot - default 1`] = `null`;
+
+exports[`Loading snapshot - small 1`] = `null`;

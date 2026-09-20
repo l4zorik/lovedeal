@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Chip snapshot - default 1`] = `null`;
+
+exports[`Chip snapshot - filled 1`] = `null`;
+
+exports[`Chip snapshot - outline 1`] = `null`;
+
+exports[`Chip snapshot - selected 1`] = `null`;
+
+exports[`Chip snapshot - with icon 1`] = `null`;

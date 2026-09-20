@@ -1,0 +1,71 @@
+{
+  "name": "lovedeal-app",
+  "version": "1.0.0",
+  "description": "LoveDeal - ceska mobilni aplikace s dealy a slevami",
+  "author": "MaxiGreens a.s.",
+  "company": {
+    "name": "MaxiGreens a.s.",
+    "type": "mateřská společnost"
+  },
+  "license": "Proprietary",
+  "homepage": "https://lovedeal.cz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maxigreens/lovedeal-app"
+  },
+  "bugs": {
+    "url": "https://github.com/maxigreens/lovedeal-app/issues"
+  },
+  "main": "expo-router/entry",
+  "dependencies": {
+    "@expo/vector-icons": "^15.1.1",
+    "@react-native-async-storage/async-storage": "^3.1.1",
+    "@react-native-community/netinfo": "12.0.1",
+    "@react-native/jest-preset": "^0.86.3",
+    "babel-preset-expo": "~57.0.0",
+    "expo": "~57.0.24",
+    "expo-application": "~57.0.3",
+    "expo-asset": "^57.0.18",
+    "expo-camera": "~57.0.5",
+    "expo-crypto": "~57.0.3",
+    "expo-haptics": "^57.0.3",
+    "expo-image": "^57.0.5",
+    "expo-intent-launcher": "~57.0.1",
+    "expo-linking": "^57.0.10",
+    "expo-location": "~57.0.19",
+    "expo-navigation-bar": "^57.0.0",
+    "expo-notifications": "~57.0.20",
+    "expo-router": "^57.0.22",
+    "expo-screen-capture": "^57.0.0",
+    "expo-splash-screen": "^57.0.9",
+    "expo-status-bar": "~57.0.1",
+    "jest": "^30.5.2",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-gesture-handler": "^3.3.0",
+    "react-native-reanimated": "^4.7.0",
+    "react-native-safe-area-context": "^5.10.0",
+    "react-native-screens": "^4.28.0",
+    "react-native-web": "^0.21.2",
+    "react-native-worklets": "^0.12.2"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --forceExit"
+  },
+  "private": true,
+  "devDependencies": {
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^13.0.1",
+    "@types/jest": "^30.0.0",
+    "jest-expo": "^57.0.5",
+    "react-test-renderer": "^19.3.0"
+  }
+}
