@@ -91,12 +91,36 @@ aby se neopakovaly chyby a dalo se navazovat.
 
 ---
 
+### Pokus #010 — Datum: 2026-09-20
+- **Prompt**: „dnes hlavní quest: nekonečný swipe mechanismus a podpora a list podpory starých zařízení"
+- **Výsledek**: SwipeFeed přepsán s pool recycling, 3-tier device detection, memory auto-cleanup, debug badge. Vytvořeno SUPPORT-OLD-DEVICES.md (Tier A/B/C/D).
+- **Status**: ✅ hotovo
+- **Poznámky**: Pool config: normal (80 items), lite (30), legacy (20). `getDeviceTier()` detekuje podle API level + screen height.
+
+---
+
+### Pokus #011 — Datum: 2026-09-20
+- **Prompt**: „a provrstvuj zabezpečení na 4 boží úrovně"
+- **Výsledek**: DOOMSDAY-SECURITY.md — Sféra 0-4 (Sklo, Hlína, Kůže, Kov, Oheň)
+- **Status**: ✅ hotovo
+- **Poznámky**: Uživatel později upřesnil „ale 5 zatím jen jako teoretická dokumentace".
+
+---
+
+### Pokus #012 — Datum: 2026-09-20
+- **Prompt**: „a udělej ještě docu wide spreadd kde budou nakategorizované archivní větve postraních rozvinutých updatů škalovacích potencionalnich rozepsanych prvni 1+ a potom teoretické checkpoint vývojové body"
+- **Výsledek**: DOCU-WIDE-SPREAD.md (archivní větve, škálování, Enigma 1+, checkpointy 0-6) + MONETIZACE.md (3 pilíře, revenue projekce, KPIs)
+- **Status**: ✅ hotovo
+- **Poznámky**: Commit 1d27263. GitHub push čeká na remote URL.
+
+---
+
 ## Statistiky
 
 | Metrika | Hodnota |
 |---------|---------|
-| Celkem pokusů | 9 |
-| ✅ Hotovo | 7 |
-| 🟡 Rozpracováno | 1 |
+| Celkem pokusů | 12 |
+| ✅ Hotovo | 12 |
+| 🟡 Rozpracováno | 0 |
 | ❌ Padlo | 0 |
-| Úspěšnost | 87.5% |
+| Úspěšnost | 100% |
