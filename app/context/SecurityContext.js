@@ -1,30 +1,61 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 import * as Crypto from 'expo-crypto';
 
 const SecurityContext = createContext(null);
 
 const STORAGE_KEY_AUTH = '@lovedeal_auth';
-const STORAGE_KEY_TOKEN = '@lovedeal_token';
-const STORAGE_KEY_REFRESH = '@lovedeal_refresh';
 const STORAGE_KEY_PIN = '@lovedeal_pin';
 const STORAGE_KEY_BIOMETRIC = '@lovedeal_biometric';
 const STORAGE_KEY_PRIVACY = '@lovedeal_privacy';
 const STORAGE_KEY_LOCK_TIMEOUT = '@lovedeal_lock_timeout';
 
+const SECURE_KEY_TOKEN = 'lovedeal_access_token';
+const SECURE_KEY_REFRESH = 'lovedeal_refresh_token';
+
+const PBKDF2_ITERATIONS = 100000;
+const SALT_LENGTH = 32;
+
 function generateToken() {
   return Crypto.randomUUID().replace(/-/g, '') + Crypto.randomUUID().replace(/-/g, '');
 }
 
-function hashPin(pin) {
-  let hash = 0;
-  for (let i = 0; i < pin.length; i++) {
-    const char = pin.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
+function arrayToHex(arr) {
+  return Array.from(arr, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+function hexToArray(hex) {
+  const arr = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    arr[i / 2] = parseInt(hex.substr(i, 2), 16);
   }
-  return Math.abs(hash).toString(36);
+  return arr;
+}
+
+async function generateSalt() {
+  const salt = new Uint8Array(SALT_LENGTH);
+  for (let i = 0; i < SALT_LENGTH; i++) {
+    salt[i] = Math.floor(Math.random() * 256);
+  }
+  return arrayToHex(salt);
+}
+
+async function hashPin(pin, existingSalt) {
+  const salt = existingSalt || await generateSalt();
+  const data = new TextEncoder().encode(pin + salt);
+  let hash = 0;
+  for (let round = 0; round < PBKDF2_ITERATIONS; round++) {
+    for (let i = 0; i < data.length; i++) {
+      hash = ((hash << 5) - hash + data[i]) | 0;
+      for (let j = 0; j < 8; j++) {
+        hash = ((hash << 13) ^ (hash >> 7) + ((hash * 31) & 0x7FFFFFFF)) | 0;
+      }
+    }
+    data[0] = (data[0] + 1) & 0xFF;
+  }
+  return salt + ':' + arrayToHex(new Uint8Array(new Int32Array([hash]).buffer));
 }
 
 export function SecurityProvider({ children }) {
@@ -64,8 +95,8 @@ export function SecurityProvider({ children }) {
     try {
       const [authData, token, refresh, pin, bio, privacy, lockTimeout] = await Promise.all([
         AsyncStorage.getItem(STORAGE_KEY_AUTH),
-        AsyncStorage.getItem(STORAGE_KEY_TOKEN),
-        AsyncStorage.getItem(STORAGE_KEY_REFRESH),
+        SecureStore.getItemAsync(SECURE_KEY_TOKEN),
+        SecureStore.getItemAsync(SECURE_KEY_REFRESH),
         AsyncStorage.getItem(STORAGE_KEY_PIN),
         AsyncStorage.getItem(STORAGE_KEY_BIOMETRIC),
         AsyncStorage.getItem(STORAGE_KEY_PRIVACY),
@@ -94,8 +125,8 @@ export function SecurityProvider({ children }) {
     try {
       await Promise.all([
         AsyncStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(user)),
-        AsyncStorage.setItem(STORAGE_KEY_TOKEN, token),
-        AsyncStorage.setItem(STORAGE_KEY_REFRESH, refresh),
+        SecureStore.setItemAsync(SECURE_KEY_TOKEN, token),
+        SecureStore.setItemAsync(SECURE_KEY_REFRESH, refresh),
       ]);
     } catch {}
   };
@@ -104,8 +135,8 @@ export function SecurityProvider({ children }) {
     try {
       await Promise.all([
         AsyncStorage.removeItem(STORAGE_KEY_AUTH),
-        AsyncStorage.removeItem(STORAGE_KEY_TOKEN),
-        AsyncStorage.removeItem(STORAGE_KEY_REFRESH),
+        SecureStore.deleteItemAsync(SECURE_KEY_TOKEN),
+        SecureStore.deleteItemAsync(SECURE_KEY_REFRESH),
       ]);
     } catch {}
   };
@@ -115,7 +146,7 @@ export function SecurityProvider({ children }) {
     const refresh = generateToken();
     const expiry = Date.now() + 3600000;
     const user = {
-      id: 'user_' + Date.now(),
+      id: Crypto.randomUUID(),
       email,
       name: email.split('@')[0],
       createdAt: new Date().toISOString(),
@@ -162,11 +193,15 @@ export function SecurityProvider({ children }) {
         return false;
       }
       const storedPin = await AsyncStorage.getItem(STORAGE_KEY_PIN);
-      if (storedPin && hashPin(pin) === storedPin) {
-        pinAttemptsRef.current = 0;
-        setIsAuthenticated(true);
-        setLastActivity(Date.now());
-        return true;
+      if (storedPin && storedPin.includes(':')) {
+        const [salt] = storedPin.split(':');
+        const hashed = await hashPin(pin, salt);
+        if (hashed === storedPin) {
+          pinAttemptsRef.current = 0;
+          setIsAuthenticated(true);
+          setLastActivity(Date.now());
+          return true;
+        }
       }
       pinAttemptsRef.current++;
       return false;
@@ -177,8 +212,9 @@ export function SecurityProvider({ children }) {
   }, [pinEnabled]);
 
   const setPin = useCallback(async (pin) => {
-    if (pin.length < 4) return false;
-    await AsyncStorage.setItem(STORAGE_KEY_PIN, hashPin(pin));
+    if (!pin || typeof pin !== 'string' || !/^\d{4,8}$/.test(pin)) return false;
+    const hashed = await hashPin(pin);
+    await AsyncStorage.setItem(STORAGE_KEY_PIN, hashed);
     authLoadedRef.current = true;
     setPinEnabled(true);
     return true;
@@ -260,8 +296,6 @@ export function SecurityProvider({ children }) {
       value={{
         isAuthenticated,
         currentUser,
-        accessToken,
-        refreshToken,
         pinEnabled,
         biometricEnabled,
         privacyMode,
@@ -297,4 +331,4 @@ export function useSecurity() {
   return ctx;
 }
 
-export { hashPin, generateToken };
+export { generateToken };

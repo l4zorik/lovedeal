@@ -1,51 +1,60 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
+import * as Crypto from 'expo-crypto';
 
 const PREFIX = '@lovedeal_';
 const CACHE_PREFIX = '@lovedeal_cache_';
-const MAX_CACHE_SIZE = 50 * 1024 * 1024;
 
-function generateKey() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+const SECURE_PREFIX = 'lovedeal_secure_';
+const SENSITIVE_KEYS = ['token', 'refresh', 'pin', 'auth', 'credentials', 'secret', 'password'];
+
+function isSensitiveKey(key) {
+  return SENSITIVE_KEYS.some((sk) => key.toLowerCase().includes(sk));
 }
 
-function xorEncode(data, key) {
-  let encoded = '';
-  for (let i = 0; i < data.length; i++) {
-    encoded += String.fromCharCode(data.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+async function deriveKey() {
+  const raw = Crypto.randomUUID();
+  let hash = 0;
+  for (let i = 0; i < raw.length; i++) {
+    hash = ((hash << 5) - hash + raw.charCodeAt(i)) | 0;
   }
-  return encoded;
+  return 'k_' + Math.abs(hash).toString(36);
 }
 
-function utf8ToBinary(str) {
-  return encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode(parseInt(p1, 16)));
-}
+const obfuscationKey = deriveKey();
 
-function binaryToUtf8(str) {
-  return decodeURIComponent(str.split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+function xorObfuscate(data, key) {
+  let result = '';
+  for (let i = 0; i < data.length; i++) {
+    result += String.fromCharCode(data.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+  }
+  return result;
 }
 
 function encodeValue(value, key) {
   const str = JSON.stringify(value);
-  const encoded = xorEncode(str, key);
-  return btoa(utf8ToBinary(encoded));
+  const obfuscated = xorObfuscate(str, key);
+  return btoa(unescape(encodeURIComponent(obfuscated)));
 }
 
 function decodeValue(encoded, key) {
   try {
-    const decoded = binaryToUtf8(atob(encoded));
-    const str = xorEncode(decoded, key);
+    const obfuscated = decodeURIComponent(escape(atob(encoded)));
+    const str = xorObfuscate(obfuscated, key);
     return JSON.parse(str);
   } catch {
     return null;
   }
 }
 
-const encryptionKey = generateKey();
-
 export const SecureStorage = {
   async set(key, value) {
     try {
-      const encoded = encodeValue(value, encryptionKey);
+      if (isSensitiveKey(key)) {
+        await SecureStore.setItemAsync(SECURE_PREFIX + key, JSON.stringify(value));
+        return true;
+      }
+      const encoded = encodeValue(value, obfuscationKey);
       await AsyncStorage.setItem(PREFIX + key, encoded);
       return true;
     } catch {
@@ -55,9 +64,13 @@ export const SecureStorage = {
 
   async get(key) {
     try {
+      if (isSensitiveKey(key)) {
+        const raw = await SecureStore.getItemAsync(SECURE_PREFIX + key);
+        return raw ? JSON.parse(raw) : null;
+      }
       const raw = await AsyncStorage.getItem(PREFIX + key);
       if (!raw) return null;
-      return decodeValue(raw, encryptionKey);
+      return decodeValue(raw, obfuscationKey);
     } catch {
       return null;
     }
@@ -65,6 +78,10 @@ export const SecureStorage = {
 
   async remove(key) {
     try {
+      if (isSensitiveKey(key)) {
+        await SecureStore.deleteItemAsync(SECURE_PREFIX + key);
+        return true;
+      }
       await AsyncStorage.removeItem(PREFIX + key);
       return true;
     } catch {
@@ -74,6 +91,10 @@ export const SecureStorage = {
 
   async exists(key) {
     try {
+      if (isSensitiveKey(key)) {
+        const val = await SecureStore.getItemAsync(SECURE_PREFIX + key);
+        return val !== null;
+      }
       const raw = await AsyncStorage.getItem(PREFIX + key);
       return raw !== null;
     } catch {
@@ -94,8 +115,12 @@ export const SecureStorage = {
 
   async multiGet(keys) {
     try {
-      const pairs = await AsyncStorage.multiGet(keys.map((k) => PREFIX + k));
-      return pairs.map(([k, v]) => [k.replace(PREFIX, ''), v ? decodeValue(v, encryptionKey) : null]);
+      const results = [];
+      for (const key of keys) {
+        const val = await this.get(key);
+        results.push([key, val]);
+      }
+      return results;
     } catch {
       return [];
     }
@@ -103,8 +128,9 @@ export const SecureStorage = {
 
   async multiSet(keyValuePairs) {
     try {
-      const pairs = keyValuePairs.map(([k, v]) => [PREFIX + k, encodeValue(v, encryptionKey)]);
-      await AsyncStorage.multiSet(pairs);
+      for (const [k, v] of keyValuePairs) {
+        await this.set(k, v);
+      }
       return true;
     } catch {
       return false;
@@ -131,7 +157,7 @@ export const CacheStorage = {
   async set(key, value, ttl = 3600000) {
     try {
       const entry = { value, expiry: Date.now() + ttl, created: Date.now() };
-      const encoded = encodeValue(entry, encryptionKey);
+      const encoded = encodeValue(entry, obfuscationKey);
       await AsyncStorage.setItem(CACHE_PREFIX + key, encoded);
       return true;
     } catch {
@@ -143,7 +169,7 @@ export const CacheStorage = {
     try {
       const raw = await AsyncStorage.getItem(CACHE_PREFIX + key);
       if (!raw) return null;
-      const entry = decodeValue(raw, encryptionKey);
+      const entry = decodeValue(raw, obfuscationKey);
       if (!entry || Date.now() > entry.expiry) {
         await AsyncStorage.removeItem(CACHE_PREFIX + key);
         return null;
@@ -171,7 +197,7 @@ export const CacheStorage = {
       for (const key of cacheKeys) {
         const raw = await AsyncStorage.getItem(key);
         if (raw) {
-          const entry = decodeValue(raw, encryptionKey);
+          const entry = decodeValue(raw, obfuscationKey);
           if (!entry || Date.now() > entry.expiry) {
             await AsyncStorage.removeItem(key);
             cleared++;

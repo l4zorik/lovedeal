@@ -1,6 +1,6 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react-native';
-import { SecurityProvider, useSecurity, hashPin, generateToken } from '../../app/context/SecurityContext';
+import { SecurityProvider, useSecurity, generateToken } from '../../app/context/SecurityContext';
 
 const wrapper = ({ children }) => <SecurityProvider>{children}</SecurityProvider>;
 
@@ -9,7 +9,6 @@ describe('SecurityContext', () => {
     const { result } = renderHook(() => useSecurity(), { wrapper });
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.currentUser).toBeNull();
-    expect(result.current.accessToken).toBeNull();
     expect(result.current.pinEnabled).toBe(false);
     expect(result.current.biometricEnabled).toBe(false);
     expect(result.current.privacyMode).toBe(false);
@@ -25,7 +24,6 @@ describe('SecurityContext', () => {
     expect(result.current.isAuthenticated).toBe(true);
     expect(result.current.currentUser).toBeDefined();
     expect(result.current.currentUser.email).toBe('test@email.cz');
-    expect(result.current.accessToken).toBeDefined();
   });
 
   it('logout vymaže stav', async () => {
@@ -39,7 +37,6 @@ describe('SecurityContext', () => {
     });
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.currentUser).toBeNull();
-    expect(result.current.accessToken).toBeNull();
   });
 
   it('setPin nastaví PIN', async () => {
@@ -102,23 +99,14 @@ describe('SecurityContext', () => {
     });
     expect(result.current.isAuthenticated).toBe(false);
   });
-});
 
-describe('hashPin', () => {
-  it('generuje konzistentní hash', () => {
-    const h1 = hashPin('1234');
-    const h2 = hashPin('1234');
-    expect(h1).toBe(h2);
-  });
-
-  it('generuje různé hashy pro různé PINy', () => {
-    const h1 = hashPin('1234');
-    const h2 = hashPin('5678');
-    expect(h1).not.toBe(h2);
-  });
-
-  it('vrací string', () => {
-    expect(typeof hashPin('1234')).toBe('string');
+  it('tokeny nejsou přístupné přes context', async () => {
+    const { result } = renderHook(() => useSecurity(), { wrapper });
+    await act(async () => {
+      await result.current.login('test@email.cz', 'password');
+    });
+    expect(result.current.accessToken).toBeUndefined();
+    expect(result.current.refreshToken).toBeUndefined();
   });
 });
 
